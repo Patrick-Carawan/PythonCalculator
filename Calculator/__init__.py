@@ -1,16 +1,28 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QLabel
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QWidget
 
-class Calculator():
+
+class Calculator(QWidget):
+
     def __init__(self):
-        self.window()
+        super().__init__()
+        self.makegui()
 
-    def window(self):
-        app = QApplication([])
-        label = QLabel('Hello World!')
-        label.show()
-        app.exec_()
+    def makegui(self):
+        label = QLabel('One day this will be a calculator!')
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        self.setLayout(layout)
+        self.show()
+
+
+
+def main():
+    app = QApplication([])
+    calc = Calculator()
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
-    Calculator()
+    main()
+
