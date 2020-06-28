@@ -1,7 +1,18 @@
-import sys
+import sys, re
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QLineEdit, QShortcut
 from PyQt5.QtGui import QRegExpValidator, QKeySequence
 from PyQt5.QtCore import *
+
+
+# Converts string to float or int
+def string_to_num(_str):
+    if _str:
+        if re.search('\\.\\d', _str):
+            return float(_str)
+        else:
+            return int(re.sub('\\.', '', _str))
+    else:
+        return 0
 
 
 class Calculator(QWidget):
@@ -65,8 +76,6 @@ class Calculator(QWidget):
         nine_shortcut = QShortcut("9", nine)
         nine_shortcut.activated.connect(nine.animateClick)
 
-
-
         # Creating a Regex validator to limit inputs to numbers and appropriate symbols
         regex = QRegExp("\\d*(?:\\.\\d+)?")
         num_validator = QRegExpValidator(regex)
@@ -129,6 +138,7 @@ class Calculator(QWidget):
         seven.clicked.connect(self.seven)
         eight.clicked.connect(self.eight)
         nine.clicked.connect(self.nine)
+        dot.clicked.connect(self.dot)
 
         plus.clicked.connect(self.add)
         minus.clicked.connect(self.subtract)
@@ -164,6 +174,9 @@ class Calculator(QWidget):
     def seven(self):
         self.screen.setText(self.screen.text()+'7')
 
+    def dot(self):
+        self.screen.setText(self.screen.text() + '.')
+
     def eight(self):
         self.screen.setText(self.screen.text()+'8')
 
@@ -173,20 +186,28 @@ class Calculator(QWidget):
     # Calculator functions
     def add(self):
 
-        if self.function:
-            self.history.setText(str(int(self.history.text())+int(self.screen.text())))
-            self.screen.setText('')
-        elif self.screen.text():
-            self.history.setText(self.screen.text())
-            self.screen.setText('')
-        else:
-            x=None
+        val = string_to_num(self.history.text()) + string_to_num(self.screen.text())
+        self.history.setText(str(val))
+        self.screen.setText('')
 
         self.function = True
         self.operator = "plus"
 
     def subtract(self):
-        print("Placeholder")
+        # if self.function:
+        #     val = string_to_num(self.history.text()) + string_to_num(self.screen.text())
+        #     self.history.setText(str(val))
+        #     self.screen.setText('')
+
+        if self.function:
+            self.equals()
+        elif self.screen.text():
+            val = string_to_num(self.screen.text())
+            self.history.setText(str(val))
+            self.screen.setText('')
+
+        self.function = True
+        self.operator = "minus"
 
     def multiply(self):
         print("Placeholder")
@@ -195,11 +216,18 @@ class Calculator(QWidget):
         print("Placeholder")
 
     def equals(self):
+        history = string_to_num(self.history.text())
+        screen = string_to_num(self.screen.text())
+
         if self.operator == "plus":
-            self.history.setText(str(int(self.history.text())+int(self.screen.text())))
+            self.history.setText(str(history+screen))
+            self.screen.setText('')
+        elif self.operator == "minus":
+            self.history.setText(str(history - screen))
             self.screen.setText('')
         self.operator = None
         self.function = False
+
 
 
 def main():
