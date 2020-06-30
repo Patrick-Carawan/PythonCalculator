@@ -210,20 +210,48 @@ class Calculator(QWidget):
         self.operator = "minus"
 
     def multiply(self):
-        print("Placeholder")
+        if self.function:
+            self.equals()
+        elif self.screen.text():
+            val = string_to_num(self.screen.text())
+            self.history.setText(str(val))
+            self.screen.setText('')
+
+        self.function = True
+        self.operator = "times"
 
     def divide(self):
-        print("Placeholder")
+        if self.function:
+            self.equals()
+        elif self.screen.text():
+            val = string_to_num(self.screen.text())
+            self.history.setText(str(val))
+            self.screen.setText('')
+
+        self.function = True
+        self.operator = "divide"
 
     def equals(self):
         history = string_to_num(self.history.text())
         screen = string_to_num(self.screen.text())
 
+        # If statement for each operator
         if self.operator == "plus":
-            self.history.setText(str(history+screen))
+            self.history.setText(str(history + screen))
             self.screen.setText('')
         elif self.operator == "minus":
             self.history.setText(str(history - screen))
+            self.screen.setText('')
+        elif self.operator == "times":
+            self.history.setText(str(history * screen))
+            self.screen.setText('')
+        elif self.operator == "divide":
+            self.history.setText(str(history / screen))
+            self.screen.setText('')
+
+        # If there is no operator just move the number on the screen to the history
+        else:
+            self.history.setText(str(screen))
             self.screen.setText('')
         self.operator = None
         self.function = False
